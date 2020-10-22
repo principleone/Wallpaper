@@ -1,5 +1,5 @@
 ﻿$RegKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-$sysLightBool = (Get-ItemProperty -Path $RegKeyPath -erroraction silentlycontinue).SystemUsesLightTheme 
+$sysLightBool = (Get-ItemProperty -Path $RegKeyPath).SystemUsesLightTheme 
 
 # chose light or dark image path
 if ($sysLightBool -eq 0)
