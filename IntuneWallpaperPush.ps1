@@ -1,5 +1,5 @@
-﻿$RegKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-$sysLightBool = (Get-ItemProperty -Path $RegKeyPath).SystemUsesLightTheme 
+$RegKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+$sysLightBool = (Get-ItemProperty -Path $RegKeyPath -Name "SystemUsesLightTheme" -ErrorAction SilentlyContinue).SystemUsesLightTheme 
 
 # chose light or dark image path
 if ($sysLightBool -eq 0)
@@ -21,8 +21,8 @@ $WallpaperDestinationFile = "$ImageDestinationFolder\wallpaper.png" # Change to 
 $LockScreenDestinationFile = "$ImageDestinationFolder\LockScreen.png" # Change to your fitting - this is the Lockscreen image
 
 # Downloads the image file from the source location
-Start-BitsTransfer -Source $WallpaperURL -Destination "$WallpaperDestinationFile"
-Start-BitsTransfer -Source $LockscreenUrl -Destination "$LockScreenDestinationFile"
+Start-BitsTransfer -Source $WallpaperURL -Destination "$WallpaperDestinationFile" -erroraction silentlycontinue
+Start-BitsTransfer -Source $LockscreenUrl -Destination "$LockScreenDestinationFile" -erroraction silentlycontinue
 
 # Assigns the wallpaper 
 $RegKeyPath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP'
