@@ -1,6 +1,3 @@
-#$ErrorActionPreference="SilentlyContinue"
-#Stop-Transcript | out-null
-#$ErrorActionPreference = "Continue"
 Start-Transcript -path C:\P1\output.txt -append
 
 
@@ -11,19 +8,32 @@ $sysLightBool = (Get-ItemProperty -Path $RegKeyPath -Name "SystemUsesLightTheme"
 if ($sysLightBool -eq 0)
 {
     #System is in dark mode
-    $url = "https://raw.githubusercontent.com/principleone/Wallpaper/main/P1Dark.jpg"
-    Write-Warning "dark."
+    $theme = "dark"
+    Write-Warning "dark"
 } else {
     #System is in light mode
-    $url = "https://raw.githubusercontent.com/principleone/Wallpaper/main/P1Light.jpg"
+    $theme = "light"
     Write-Warning "light"
 }
 
-$WallpaperURL = $url
+# seasonal wallpaper filepath construction
+if ((Get-Date).Month -eq 12)
+{
+    # december
+    $folder = "christmas"
+}
+else {
+    # default
+    $folder = "default"
+}
+
+$branch="adj97-patch-1"
+$baseGitHubURL = "https://raw.githubusercontent.com/principleone/Wallpaper/$branch/img"
+$WallpaperURL = "$baseGitHubURL/$folder/$theme.jpg"
 
 $ImageDestinationFolder = "C:\P1\Wallpaper" # Change to your fitting - this is the folder for the wallpaper image
 md $ImageDestinationFolder -erroraction silentlycontinue # Creates the destination folder on the target computer
-attrib +h "C:\P1"
+attrib +h "C:\P1" # make hidden
 
 $WallpaperDestinationFile = "$ImageDestinationFolder\wallpaper.png" # Change to your fitting - this is the Wallpaper image
 
