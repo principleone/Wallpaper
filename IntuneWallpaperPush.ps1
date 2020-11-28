@@ -1,6 +1,5 @@
 Start-Transcript -path C:\P1\output.txt -append
 
-
 $RegKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
 $sysLightBool = (Get-ItemProperty -Path $RegKeyPath -Name "SystemUsesLightTheme").SystemUsesLightTheme 
 
@@ -21,13 +20,15 @@ if ((Get-Date).Month -eq 12)
 {
     # december
     $folder = "christmas"
+    Write-Warning "christmas"
 }
 else {
     # default
     $folder = "default"
+    Write-Warning "default"
 }
 
-$branch="adj97-patch-1"
+$branch="main"
 $baseGitHubURL = "https://raw.githubusercontent.com/principleone/Wallpaper/$branch/img"
 $WallpaperURL = "$baseGitHubURL/$folder/$theme.jpg"
 
