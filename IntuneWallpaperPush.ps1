@@ -1,56 +1,34 @@
+﻿# Write script output to file
 Start-Transcript -path C:\P1\output.txt -append
 
+# Get system theme (dark or light)
+# HKCU can be read with non-admin elevation
 $RegKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
 $sysLightBool = (Get-ItemProperty -Path $RegKeyPath -Name "SystemUsesLightTheme").SystemUsesLightTheme 
 
-# chose light or dark image path
+# Chose light or dark image path
 if ($sysLightBool -eq 0)
 {
-    #System is in dark mode
-    $theme = "dark"
-    Write-Warning "dark"
+    # System is in dark mode
+    $theme = "Dark"
 } else {
-    #System is in light mode
-    $theme = "light"
-    Write-Warning "light"
+    # Default to white image
+    # System is in light mode
+    $theme = "Light"
 }
 
-# seasonal wallpaper filepath construction
-if ((Get-Date).Month -eq 12)
-{
-    # december
-    $folder = "christmas"
-    Write-Warning "christmas"
-}
-else {
-    # default
-    $folder = "default"
-    Write-Warning "default"
-}
+# Construct wallpaper github url from theme
+$WallpaperURL = "https://raw.githubusercontent.com/principleone/Wallpaper/main/P1$theme.jpg"
 
-$branch="main"
-$baseGitHubURL = "https://raw.githubusercontent.com/principleone/Wallpaper/$branch/img"
-$WallpaperURL = "$baseGitHubURL/$folder/$theme.jpg"
-
-$ImageDestinationFolder = "C:\P1\Wallpaper" # Change to your fitting - this is the folder for the wallpaper image
-md $ImageDestinationFolder -erroraction silentlycontinue # Creates the destination folder on the target computer
+# Ensure destination folder exists and is hidden 
+$ImageDestinationFolder = "C:\P1\Wallpaper" 
+md $ImageDestinationFolder -erroraction silentlycontinue
 attrib +h "C:\P1" # make hidden
 
-$WallpaperDestinationFile = "$ImageDestinationFolder\wallpaper.png" # Change to your fitting - this is the Wallpaper image
-
 # Downloads the image file from the source location
+$WallpaperDestinationFile = "$ImageDestinationFolder\wallpaper.jpg"
 Start-BitsTransfer -Source $WallpaperURL -Destination "$WallpaperDestinationFile" -erroraction silentlycontinue
 
-# Assigns the wallpaper 
-$RegKeyPath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP'
-
-Remove-Item -Path $RegKeyPath -Recurse -erroraction silentlycontinue
-New-Item -Path $RegKeyPath -Force
-
-New-ItemProperty -Path $RegKeyPath -Name "DesktopImageStatus" -Value "1" -PropertyType DWORD -Force
-New-ItemProperty -Path $RegKeyPath -Name "LockScreenImageStatus" -Value "0" -PropertyType DWORD -Force
-New-ItemProperty -Path $RegKeyPath -Name "DesktopImagePath" -Value $WallpaperDestinationFile -PropertyType STRING -Force
-New-ItemProperty -Path $RegKeyPath -Name "DesktopImageUrl" -Value $WallpaperDestinationFile -PropertyType STRING -Force
-
+# Wallpaper path will be C:\P1\Wallpaper\wallpaper.jpg
 
 Stop-Transcript
